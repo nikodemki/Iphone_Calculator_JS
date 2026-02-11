@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <link rel="stylesheet" href="styl.css">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Kalkulator</title>
+    </head>
+    <body>
+        <div id="wszystko">
+            <header>
+                <div id="historia">
+                    <button id="historia"><img src="zegar.png"></button>
+                </div>
+                <div id="typ">
+                    <button id="typ"><img src="kalkulatorr.png"></button>
+                </div>
+            </header>
+            <div id="tekst">
+                <div id="poprzednie">
+                </div>
+                <div id="wynik">
+                </div>
+            </div>
+            <main id="klawiatura">
+                <button class="gora" id="del">&#9003;</button>
+                <button class="gora" id="ac"></button>
+                <button class="gora" id="procent">%</button>
+                <button class="prawe" id="dzielenie">/</button><br>
+                <button class="cyfry" value="7">7</button>
+                <button class="cyfry" value="8">8</button>
+                <button class="cyfry" value="9">9</button>
+                <button class="prawe" id="razy" value="x">x</button><br>
+                <button class="cyfry" value="4">4</button>
+                <button class="cyfry" value="5">5</button>
+                <button class="cyfry" value="6">6</button>
+                <button class="prawe" id="minus">-</button><br>
+                <button class="cyfry" value="1">1</button>
+                <button class="cyfry" value="2">2</button>
+                <button class="cyfry" value="3">3</button>
+                <button class="prawe" id="dodac">+</button><br>
+                <button class="prawiecyfry" id="negatyw">±</button>
+                <button class="cyfry" value="0">0</button>
+                <button class="prawiecyfry" id="przecinek">,</button>
+                <button class="prawe" id="rownasie">=</button><br>
+            </main>
+        </div>
+        <script>
+            let wpisane = "";
+            let wpisane2 = "";
+            let operatorSet = false;
+            let znak = "";
+            let wynikdzialania = null;
+            let ekranCzysc = false;
+            let historia = "";
+
+            document.getElementById("wynik").textContent = "0";
+
+            document.querySelectorAll("#del").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    if(wpisane == ""){}
+                    else if(wpisane != "" && wpisane2 == ""){
+                        let ekran = document.getElementById("wynik");
+                        ekran.textContent = ekran.textContent.slice(0, -1);
+                        wpisane = wpisane.slice(0, -1);
+                        historia = historia.slice(0, -1);
+                    }
+                    else if(wpisane != "" && wpisane2 !== "")
+                    {
+                        let ekran = document.getElementById("wynik");
+                        ekran.textContent = ekran.textContent.slice(0, -1);
+                        wpisane2 = wpisane2.slice(0, -1);
+                        historia = historia.slice(0, -1);
+                    }
+                });
+            });
+
+            document.querySelectorAll(".cyfry").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    let ekran = document.getElementById("wynik");
+                    if (wynikdzialania !== null && ekranCzysc) {
+                        ekran.textContent = "";
+                        wynikdzialania = null;
+                        ekranCzysc = false;
+                        wpisane = "";
+                        wpisane2 = "";
+                        operatorSet = false;
+                        znak = "";
+                        document.getElementById("poprzednie").textContent = historia;
+                    }
+
+                    let cyfra = e.target.value;
+
+                    if (!operatorSet) {
+                        if (ekran.textContent === "0") ekran.textContent = cyfra;
+                        else ekran.textContent += cyfra;
+                        wpisane += cyfra;
+                        historia += cyfra;
+                    } else {
+                        if (ekran.textContent === "0") ekran.textContent = cyfra;
+                        else ekran.textContent += cyfra;
+                        wpisane2 += cyfra;
+                        historia += cyfra;
+                    }
+                });
+            });
+
+            function ustawOperator(op) {
+                let ekran = document.getElementById("wynik");
+                let ostatni = ekran.textContent.slice(-1);
+
+                if (!operatorSet) {
+                    operatorSet = true;
+                    znak = op;
+                    historia += op;
+                    ekran.textContent += op;
+                } else if (["-", "+", "x", "/", "%", "przecinek"].includes(ostatni)) {
+                    znak = op;
+                    historia = historia.slice(0, -1) + op;
+                    ekran.textContent = ekran.textContent.slice(0, -1) + op;
+                }
+            }
+            document.getElementById("przecinek").addEventListener("click", function() {
+                let ekran = document.getElementById("wynik");
+
+                if (!operatorSet) {
+                    if (!wpisane.includes(".")) {
+                        if (wpisane === "") wpisane = "0";
+                        wpisane += ".";
+                        historia += ".";
+                        if (ekran.textContent === "0") ekran.textContent = "0.";
+                        else ekran.textContent += ".";
+                    }
+                } else {
+                    if (!wpisane2.includes(".")) {
+                        if (wpisane2 === "") wpisane2 = "0";
+                        wpisane2 += ".";
+                        historia += ".";
+                        ekran.textContent += ".";
+                    }
+                }
+            });
+
+            document.querySelectorAll("#ac").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    wpisane = "";
+                    historia = "";
+                    znak = "";
+                    wpisane2 = "";
+                    operatorSet = false;
+                    wynikdzialania = null;
+                    ekranCzysc = false;
+                    document.getElementById("wynik").textContent = "0";
+                    document.getElementById("poprzednie").textContent = "";
+                });
+            });
+
+            document.querySelectorAll("negatyw").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    if(wpisane == ""){}
+                    else if(wpisane != "" && wpisane2 == ""){
+                        let ekran = document.getElementById("wynik");
+                        ekran.textContent = ekran.textContent.slice(0, -1);
+                        wpisane = wpisane.slice(0, -1);
+                        historia = historia.slice(0, -1);
+                    }
+                    else if(wpisane != "" && wpisane2 !== "")
+                    {
+                        let ekran = document.getElementById("wynik");
+                        ekran.textContent = ekran.textContent.slice(0, -1);
+                        wpisane2 = wpisane2.slice(0, -1);
+                        historia = historia.slice(0, -1);
+                    }
+                });
+            });
+
+            document.getElementById("minus").addEventListener("click", () => ustawOperator("-"));
+            document.getElementById("dodac").addEventListener("click", () => ustawOperator("+"));
+            document.getElementById("razy").addEventListener("click", () => ustawOperator("x"));
+            document.getElementById("dzielenie").addEventListener("click", () => ustawOperator("/"));
+            document.getElementById("procent").addEventListener("click", () => ustawOperator("%"));
+
+            document.getElementById("rownasie").addEventListener("click", function() {
+                if (wpisane !== "" && wpisane2 !== "") {
+                    if (znak === "-") wynikdzialania = Number(wpisane) - Number(wpisane2);
+                    if (znak === "+") wynikdzialania = Number(wpisane) + Number(wpisane2);
+                    if (znak === "x") wynikdzialania = Number(wpisane) * Number(wpisane2);
+                    if (znak === "/") wynikdzialania = Number(wpisane) / Number(wpisane2);
+                    if (znak === "%") wynikdzialania = Number(wpisane) % Number(wpisane2);
+                    if(wynikdzialania.toString().length > 10)
+                    {
+                        wynikdzialania = wynikdzialania = parseFloat((wynikdzialania).toFixed(7));
+                        document.getElementById("wynik").textContent = wynikdzialania;
+                        document.getElementById("poprzednie").textContent = historia;
+                        historia = "";
+                        ekranCzysc = true;
+                    }
+                    else
+                    {
+                        document.getElementById("wynik").textContent = wynikdzialania;
+                        document.getElementById("poprzednie").textContent = historia; 
+                        historia = "";
+                        ekranCzysc = true;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
